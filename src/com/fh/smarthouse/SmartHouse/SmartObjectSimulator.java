@@ -1,8 +1,13 @@
 package com.fh.smarthouse.SmartHouse;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 import com.fh.smarthouse.energy.CityPower;
@@ -11,133 +16,230 @@ import com.fh.smarthouse.energy.EnergySource;
 import com.fh.smarthouse.energy.SolarPanel;
 import com.fh.smarthouse.management.EnergyManager;
 import com.fh.smarthouse.objects.SmartObject;
-import com.fh.smarthouse.objects.SmartObjectEnum;
 
 public class SmartObjectSimulator {
-	public static final Logger logger = Logger.getLogger(SmartObjectSimulator.class.getName());
+
+	private static final Logger logger = Logger.getLogger(SmartObjectSimulator.class.getName());
 
 	public static void main(String[] args) {
 
-		Scanner scanner = new Scanner(System.in);
+		try {
+			// Load logging configuration from file
+			LogManager.getLogManager()
+					.readConfiguration(SmartObjectSimulator.class.getResourceAsStream("/logging.properties"));
 
-		logger.info("Welcome to the Smart House Management System!");
-		logger.info("Please enter your name: ");
-		String name = scanner.nextLine();
+			logger.info("Logging setup completed!");
 
-		logger.info("Hello " + name + "!\n----Main menu----\n");
-		logger.info("1. Energy sources\n2.Smart Objects\n");
-		Integer choice = scanner.nextInt();
-		List<EnergySource> energySources = new ArrayList<>();
-		List<SmartObject> smartObjects = new ArrayList<>();
-
-		switch (choice) {
-		case 1:
-			energySources = getEnergySources(scanner);
-//			break;
-		case 2:
-			smartObjects = getSmartObjects(scanner);
-		default:
-			logger.warning("Invalid input. Please enter a valid number (0/1)");
+			// Your existing application logic
+		} catch (IOException e) {
+			System.err.println("Failed to load logging configuration: " + e.getMessage());
 		}
 
-		EnergyManager energyManager = new EnergyManager(energySources, smartObjects);
+		// Initialize energy sources
 
-		energyManager.turnOnObject("refrigerator");
-//		energyManager.turnOnObject("Air conditioner");
-//		energyManager.turnOffObject("refrigerator");
+		List<EnergySource> energySources = Arrays.asList(new SolarPanel(500), new CityPower(1000),
+				new DieselGenerator(800));
 
-		energyManager.manageEnergy();
+		// Initialize smart objects
+		List<SmartObject> smartObjects = Arrays.asList(new SmartObject("Lamp", 100), new SmartObject("AC", 300),
+				new SmartObject("TV", 200), new SmartObject("Fridge", 300));
 
-		scanner.close();
-	}
+		// Initialize energy manager
+		EnergyManager manager = new EnergyManager(new ArrayList<>(smartObjects), new ArrayList<>(energySources));
 
-	private static List<SmartObject> getSmartObjects(Scanner scanner) {
-		List<SmartObject> smartObjects = new ArrayList<>();
+		// User interaction
+		try (Scanner scanner = new Scanner(System.in)) {
+			boolean exit = false;
 
-		logger.info("Please choose from the following smart object(s):");
+			while (!exit) {
+				System.out.println("\n<<< Welcome to Smart House Management >>>");
+				System.out.println("1. View Status");
+				System.out.println("2. Manage Smart Objects");
+				System.out.println("3. Set Active Energy Source");
+				System.out.println("4. Balance Load Across Sources");
+				System.out.println("0. Exit");
+				System.out.print("Choose an option: ");
 
-		logger.info("1. Refrigerator\n2.Air Conditioner\n3.Television\n4.Lamp\n0.Back\nQ.Quit\n");
+				try {
+					int choice = scanner.nextInt();
+					switch (choice) {
+					case 1:
+						viewStatus(manager, scanner);
+						break;
+					case 2:
+						manageSmartObjects(manager, scanner);
+						break;
+					case 3:
+						setActiveEnergySource(manager, scanner);
+						break;
+					case 4:
+						manager.balanceLoadAcrossSources();
+					case 0: {
+						exit = true;
+						System.out.println("Exiting...");
+					}
+					default:
+						System.out.println("Invalid option. Please try again.");
+						logger.warning("Invalid input. Please enter a valid number.");
 
-		String smartObjectStr = "";
-		Scanner sc = new Scanner(System.in);
-		if (sc.hasNextLine()) {
-			smartObjectStr = sc.nextLine();
-		} else {
-			logger.warning("No input was entered.");
-		}
-		String[] smartObjectArr = smartObjectStr.split(",");
-
-		for (String smartObject : smartObjectArr) {
-			switch (smartObject) {
-			case "1":
-				smartObjects.add(new SmartObject(SmartObjectEnum.Fridge.getName(), SmartObjectEnum.Fridge.getPower()));
-				modifyState(smartObjects);
-				break;
-			case "2":
-				smartObjects.add(new SmartObject(SmartObjectEnum.AC.getName(), SmartObjectEnum.AC.getPower()));
-				modifyState(smartObjects);
-				break;
-			case "3":
-				smartObjects.add(new SmartObject(SmartObjectEnum.TV.getName(), SmartObjectEnum.TV.getPower()));
-				modifyState(smartObjects);
-				break;
-			case "4":
-				smartObjects.add(new SmartObject(SmartObjectEnum.Lamp.getName(), SmartObjectEnum.Lamp.getPower()));
-				modifyState(smartObjects);
-				break;
-			case "Q":
-				logger.warning("Exiting the system...");
-				System.exit(0);
-			default:
-				logger.warning("Unexpected value. Please enter a valid number");
-				sc.close();
-				System.exit(0);
+					}
+				} catch (InputMismatchException e) {
+					logger.warning("Invalid input. Please enter a valid number.");
+					scanner.nextLine(); // Clear invalid input
+				}
 			}
-			sc.close();
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "An unexpected error occurred: " + e.getMessage(), e);
 		}
-		return smartObjects;
+
 	}
 
-	private static void modifyState(List<SmartObject> smartObjects) {
-		for (SmartObject smartObj : smartObjects) {
-			smartObj.turnOn();
-			logger.info("The " + smartObj.getName() + " is turned " + smartObj.isOn() != null && smartObj.isOn() ? "On"
-					: "Off");
-		}
-	}
+	private static void viewStatus(EnergyManager manager, Scanner scanner) {
+		try {
+			boolean exit = false;
 
-	private static List<EnergySource> getEnergySources(Scanner scanner) {
-		logger.info("Please choose from the following energy source(s):");
-		logger.info("1. Solar energy\n2.City Power\n3.Diesel Generator\n4.Main Menu");
-		Scanner sc = new Scanner(System.in);
-		String energySourceStr = sc.nextLine();
-		String[] energySourcesArr = energySourceStr.split(",");
-		EnergySource solarPanel = new SolarPanel(500);
-		EnergySource cityPower = new CityPower(1000);
-		EnergySource dieselGenerator = new DieselGenerator(750);
-		List<EnergySource> energySources = new ArrayList<>();
+			while (!exit) {
+				System.out.println("\n<<< Smart Objects >>>");
+				manager.getSmartObjects().forEach(object -> System.out.println(object.getName() + " - "
+						+ (object.isOn() ? "On" : "Off") + " - Consumption: " + object.getConsumption() + " W"));
 
-		for (String energySource : energySourcesArr) {
-			switch (energySource) {
-			case "1":
-				energySources.add(solarPanel);
-				break;
-			case "2":
-				energySources.add(cityPower);
-				break;
-			case "3":
-				energySources.add(dieselGenerator);
-				break;
-			default:
-				logger.info("energySource--->" + energySource);
-				logger.warning("Unexpected value. Please enter a valid number");
-				scanner.close();
-				System.exit(0);
+				System.out.println("\n<<< Energy Sources >>>");
+				EnergySource activeSource = manager.getActiveSource();
+				double totalConsumption = manager.calculateTotalConsumption();
+
+				System.out.println(
+						"Active Source: " + (activeSource != null ? activeSource.getClass().getSimpleName() : "None"));
+				System.out.println("Total Consumption: " + totalConsumption + " W");
+
+				if (activeSource != null && totalConsumption > activeSource.getCapacity()) {
+					logger.warning("Warning! Energy consumption exceeds source capacity.");
+				}
+
+				// Option to go back
+				System.out.print("\nEnter (0) to go back: ");
+				String userInput = scanner.next();
+
+				if ("0".equals(userInput)) {
+					exit = true;
+					System.out.println("Returning to the previous menu...");
+				} else {
+					System.out.println("Invalid input. Please enter 0 to go back.");
+				}
 			}
-			sc.close();
+		} catch (Exception e) {
+			logger.log(Level.WARNING, "Error while viewing status: " + e.getMessage(), e);
 		}
+	}
 
-		return energySources;
+	private static void manageSmartObjects(EnergyManager manager, Scanner scanner) {
+		try {
+
+			boolean exit = false;
+			while (!exit) {
+				System.out.println("\n<<< Manage Smart Objects >>>");
+				System.out.println("1. Add Smart Object");
+				System.out.println("2. Remove Smart Object");
+				System.out.println("3. Toggle Smart Object");
+				System.out.println("4. List Smart Objects");
+				System.out.println("0. Go Back");
+				System.out.print("Choose an option: ");
+
+				int choice = scanner.nextInt();
+
+				switch (choice) {
+				case 1:
+					manager.addSmartObject(scanner); // Add a new smart object
+				case 2: {
+					System.out.print("Enter the name of the object to remove: ");
+					String name = scanner.next();
+					manager.deleteSmartObject(name); // Remove the specified smart object
+				}
+				case 3:
+					toggleSmartObject(manager, scanner); // Toggle the state of a smart object
+				case 4:
+					manager.listSmartObject(); // List all smart objects
+				case 0:
+					exit = true; // Exit the menu
+				default:
+					System.out.println("Invalid option. Please try again."); // Handle invalid input
+				}
+			}
+			System.out.println("Returning to the previous menu...");
+		} catch (InputMismatchException e) {
+			logger.warning("Invalid input. Please enter a valid number.");
+			scanner.nextLine(); // Clear invalid input
+		} catch (Exception e) {
+			logger.log(Level.WARNING, "Error while managing smart objects: " + e.getMessage(), e);
+		}
+	}
+
+	private static void toggleSmartObject(EnergyManager manager, Scanner scanner) {
+		try {
+
+			List<SmartObject> smartObjects = manager.getSmartObjects();
+			boolean exit = false;
+
+			while (!exit) {
+				System.out.println("\n<<< Toggle Smart Object >>>");
+				for (int i = 0; i < smartObjects.size(); i++) {
+					SmartObject object = smartObjects.get(i);
+					System.out.println((i + 1) + ". " + object.getName() + " - " + (object.isOn() ? "ON" : "OFF"));
+				}
+				System.out.print("Select a smart object to toggle or enter 0 to go back: ");
+
+				int index = scanner.nextInt() - 1;
+
+				if (index == -1) {
+					exit = true; // User entered 0 to exit the menu
+				} else if (index >= 0 && index < smartObjects.size()) {
+					manager.toggleSmartObject(index); // Toggle the selected object
+				} else {
+					System.out.println("Invalid selection. Please try again.");
+				}
+			}
+			System.out.println("Returning to the previous menu...");
+		} catch (InputMismatchException e) {
+			logger.warning("Invalid input. Please enter a valid number.");
+			scanner.nextLine(); // Clear invalid input
+		} catch (Exception e) {
+			logger.log(Level.WARNING, "Error while toggling smart object: " + e.getMessage(), e);
+		}
+	}
+
+	private static void setActiveEnergySource(EnergyManager manager, Scanner scanner) {
+		try {
+
+			boolean exit = false;
+
+			while (!exit) {
+				System.out.println("\n<<< Set Active Energy Source >>>");
+				List<EnergySource> energySources = manager.getEnergySources();
+
+				for (int i = 0; i < energySources.size(); i++) {
+					EnergySource source = energySources.get(i);
+					System.out.println((i + 1) + ". " + source.getClass().getSimpleName() + " - Remaining Capacity: "
+							+ source.getCapacity() + " W");
+				}
+				System.out.println("0. Go Back");
+				System.out.print("Choose an energy source: ");
+
+				int index = scanner.nextInt() - 1;
+
+				if (index == -1) {
+					exit = true; // Exit the menu when the user enters 0
+				} else if (index >= 0 && index < energySources.size()) {
+					manager.setActiveSource(energySources.get(index)); // Set the selected energy source
+				} else {
+					System.out.println("Invalid selection. Please try again.");
+				}
+			}
+			System.out.println("Returning to the previous menu...");
+		} catch (InputMismatchException e) {
+			logger.warning("Invalid input. Please enter a valid number.");
+			scanner.nextLine(); // Clear invalid input
+		} catch (Exception e) {
+			logger.log(Level.WARNING, "Error while setting active energy source: " + e.getMessage(), e);
+		}
 	}
 
 }

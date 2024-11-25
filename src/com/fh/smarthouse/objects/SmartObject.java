@@ -2,8 +2,8 @@ package com.fh.smarthouse.objects;
 
 public class SmartObject {
 
-	private final String name;
-	private final double powerConsumption;
+	private String name;
+	private double powerConsumption;
 	private boolean isOn;
 
 	public SmartObject(String name, double powerConsumption) {
@@ -19,6 +19,10 @@ public class SmartObject {
 	public double getConsumption() {
 		return isOn ? powerConsumption : 0;
 	}
+
+	public double getWatt() {
+		return  powerConsumption;
+	}
 	public boolean isOn() {
 		return isOn;
 	}
@@ -29,4 +33,12 @@ public class SmartObject {
 		isOn = false;
 	}
 
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setPowerConsumption(double powerConsumption) {
+		this.powerConsumption = powerConsumption;
+	}
 }
