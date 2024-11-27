@@ -2,13 +2,11 @@
 SmartHouse is a Java-based smart home management system designed to simulate and manage energy consumption across various smart devices and energy sources. The application allows users to add, remove, and toggle smart devices while balancing energy loads across multiple sources. The application simulates real home energy sources and usage which includes City Power, Solar Panels, and possibly a Diesel Generator (DG).
 ## Role Distribution
 This project was developed collaboratively by a team of three members, with each member focusing on specific components:
-
 ### Team Member	Responsibility
-This project was developed collaboratively by a team of three members, with each member focusing on specific components:
 Description: 
-1. Ali	SmartHouseSimulator and SmartObject classes	Responsible for implementing the core simulation logic and managing smart objects within the system.
-2. Bhavana	EnergyManager class	Designed and implemented the energy management system, including load balancing and smart object control.
-3. Aftab	EnergySource interface, SolarPanel, CityPower, and DieselGenerator classes	Developed the energy source framework and specific implementations to manage energy capacity and interaction with smart objects.
+1. Ali - **SmartHouseSimulator** and **SmartObject** classes	Responsible for implementing the core simulation logic and managing smart objects within the system.
+2. Bhavana - **EnergyManager** and **LogManger** classes	Designed and implemented the energy management system, including load balancing and smart object control and logging messages to file.
+3. Aftab - **EnergySource** interface, **SolarPanel**, **CityPower**, and **DieselGenerator** classes	Developed the energy source framework and specific implementations to manage energy capacity and interaction with smart objects.
 
 
 ## Features
@@ -31,14 +29,13 @@ Description:
 ### Using Maven
 Clone the repository:
 Block:
-git clone https://github.com/yourusername/SmartHouse.git
-cd SmartHouse
+'git clone https://github.com/yourusername/SmartHouse.git'
+'cd SmartHouse'
 
 ### Build the project:
 'mvn clean package'
 ### Run the application:
-Block:
-java -jar target/SmartHouse-1.0-SNAPSHOT.jar
+'java -jar target/SmartHouse-1.0-SNAPSHOT.jar'
 
 ## Logs
 Logs are saved in **/home/ali/Documents/smart_objects.log.** Adjust the logging path in the **LogManager** configuration if needed.
