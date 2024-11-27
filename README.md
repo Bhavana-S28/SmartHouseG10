@@ -28,8 +28,8 @@ Description:
 ## How to Run
 ### Using Maven
 Clone the repository:
-'git clone https://github.com/yourusername/SmartHouse.git'
-'cd SmartHouse'
+> 'git clone https://github.com/yourusername/SmartHouse.git'
+> 'cd SmartHouse'
 
 ### Build the project:
 'mvn clean package'
