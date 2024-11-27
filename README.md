@@ -4,9 +4,9 @@ SmartHouse is a Java-based smart home management system designed to simulate and
 This project was developed collaboratively by a team of three members, with each member focusing on specific components:
 ### Team Member	Responsibility
 Description: 
-1. Ali - **SmartHouseSimulator** and **SmartObject** classes	Responsible for implementing the core simulation logic and managing smart objects within the system.
-2. Bhavana - **EnergyManager** and **LogManger** classes	Designed and implemented the energy management system, including load balancing and smart object control and logging messages to file.
-3. Aftab - **EnergySource** interface, **SolarPanel**, **CityPower**, and **DieselGenerator** classes	Developed the energy source framework and specific implementations to manage energy capacity and interaction with smart objects.
+1. *Mohammad Ali Moradi* - **SmartHouseSimulator** and **SmartObject** classes	Responsible for implementing the core simulation logic and managing smart objects within the system.
+2. *Bhavana Shivaraju* - **EnergyManager** and **LogManger** classes	Designed and implemented the energy management system, including load balancing and smart object control and logging messages to file.
+3. *Aftab Makbul Makandar* - **EnergySource** interface, **SolarPanel**, **CityPower**, and **DieselGenerator** classes	Developed the energy source framework and specific implementations to manage energy capacity and interaction with smart objects.
 
 
 ## Features
@@ -28,7 +28,6 @@ Description:
 ## How to Run
 ### Using Maven
 Clone the repository:
-Block:
 'git clone https://github.com/yourusername/SmartHouse.git'
 'cd SmartHouse'
 
