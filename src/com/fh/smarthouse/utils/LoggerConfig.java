@@ -8,7 +8,7 @@ import java.util.logging.SimpleFormatter;
 
 public class LoggerConfig {
 	public static void setup() throws IOException {
-		FileHandler fileHandler = new FileHandler("C:\\\\Users\\\\bhava\\\\Desktop\\\\logs\\\\smartHouse.log", true);
+		FileHandler fileHandler = new FileHandler("C:\\Users\\bhava\\Desktop\\logs\\smartHouse.log", true);
 		fileHandler.setFormatter(new SimpleFormatter());
 
 		Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);

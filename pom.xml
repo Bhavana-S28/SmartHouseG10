@@ -48,8 +48,21 @@
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
-      <version>3.11.2</version>
+      <version>3.12.4</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-api</artifactId>
+        <version>5.8.1</version> <!-- Change to the required version -->
+        <scope>test</scope>
+    </dependency>
+    <!-- JUnit Jupiter Engine for running tests -->
+    <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-engine</artifactId>
+        <version>5.8.1</version> <!-- Change to the required version -->
+        <scope>test</scope>
+        </dependency>
   </dependencies>
 </project>

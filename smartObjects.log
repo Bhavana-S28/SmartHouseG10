@@ -1,0 +1,16 @@
+Nov 27, 2024 2:06:12 AM com.fh.smarthouse.management.EnergyManager startLoadBalancing
+INFO: Starting load balancing...
+Nov 27, 2024 2:06:12 AM com.fh.smarthouse.management.EnergyManager setActiveSource
+INFO: Active energy source set to EnergySource$MockitoMock$1781492078
+Nov 27, 2024 2:07:31 AM com.fh.smarthouse.management.EnergyManager startLoadBalancing
+INFO: Starting load balancing...
+Nov 27, 2024 2:07:31 AM com.fh.smarthouse.management.EnergyManager setActiveSource
+INFO: Active energy source set to EnergySource$MockitoMock$1933690720
+Nov 27, 2024 2:07:31 AM com.fh.smarthouse.management.EnergyManager setActiveSource
+INFO: Active energy source set to SolarPanel
+Nov 27, 2024 2:07:31 AM com.fh.smarthouse.management.EnergyManager setActiveSource
+INFO: Active energy source set to CityPower
+Nov 27, 2024 10:59:00 AM com.fh.smarthouse.management.EnergyManager setActiveSource
+INFO: Active energy source set to EnergySource$MockitoMock$1799162718
+Nov 27, 2024 11:12:31 AM com.fh.smarthouse.management.EnergyManager setActiveSource
+INFO: Active energy source set to EnergySource$MockitoMock$203754722

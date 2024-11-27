@@ -11,6 +11,12 @@ public class SmartObject {
 		this.powerConsumption = powerConsumption;
 		this.isOn = false;
 	}
+	
+	public SmartObject(String name, double powerConsumption, boolean isOn) {
+		this.name = name;
+		this.powerConsumption = powerConsumption;
+		this.isOn = isOn;
+	}
 
 	public String getName() {
 		return name;
